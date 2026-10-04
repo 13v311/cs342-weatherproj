@@ -4,6 +4,7 @@ import weather.exception.WeatherDataException;
 import weather.model.Location;
 import weather.model.WeatherData;
 import weather.provider.WeatherDataProvider;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,17 +39,35 @@ public class WeatherService {
         }
     }
 
-    public double getTemperature(Location location){
+    public List<Location> getLocations(){
+        return new ArrayList<>(cities.keySet());
+    }
+
+    public Location findLocation(String name){
+        for(Location location : cities.keySet()){
+            if(name.equalsIgnoreCase(location.name())){
+                return location;
+            }
+
+        }
+        return null;
+    }
+
+    public double getTemperature(String city){
+        Location location = findLocation(city);
+
         WeatherData f = cities.get(location);
         return f.temp();
     }
 
-    public double getHumidity(Location location){
+    public double getHumidity(String city){
+        Location location = findLocation(city);
         WeatherData f = cities.get(location);
         return f.humidity();
     }
 
-    public double getWindSpeed(Location location){
+    public double getWindSpeed(String city){
+        Location location = findLocation(city);
         WeatherData f = cities.get(location);
         return f.windSpeed();
     }
