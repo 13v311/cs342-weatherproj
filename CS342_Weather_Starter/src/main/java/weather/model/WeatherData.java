@@ -1,4 +1,5 @@
 package weather.model;
-
-public record WeatherData(Double temperature) { //placeholder
-}
+public record WeatherData(String city,
+                          double temp,
+                          double humidity,
+                          double windSpeed) {};
