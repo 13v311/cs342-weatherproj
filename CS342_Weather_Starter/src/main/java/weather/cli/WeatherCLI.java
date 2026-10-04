@@ -1,13 +1,10 @@
 package weather.cli;
 
 import weather.model.Location;
-import weather.model.WeatherData;
+//import weather.model.WeatherData;
 import weather.service.WeatherService;
 
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.function.Consumer;
 
 
 public class WeatherCLI {
@@ -129,18 +126,18 @@ public class WeatherCLI {
 
     }
 
-    //is this needed?
-    static void renderBar(String city, double temp) {  //Instead of these parameters, we pass the records
-        System.out.printf("%-15s | %5.1f°F [", city, temp);
-        int barLength = (int) Math.max(0, temp / 2);
-
-        for (int j = 0; j < barLength; j++) {
-            System.out.print("■");
-        }
-        for (int j = barLength; j < 40; j++) {
-            System.out.print(" ");
-        }
-        //println("]");
-    }
+//    //is this needed?
+//    static void renderBar(String city, double temp) {  //Instead of these parameters, we pass the records
+//        System.out.printf("%-15s | %5.1f°F [", city, temp);
+//        int barLength = (int) Math.max(0, temp / 2);
+//
+//        for (int j = 0; j < barLength; j++) {
+//            System.out.print("■");
+//        }
+//        for (int j = barLength; j < 40; j++) {
+//            System.out.print(" ");
+//        }
+//        //println("]");
+//    }
 }
 
