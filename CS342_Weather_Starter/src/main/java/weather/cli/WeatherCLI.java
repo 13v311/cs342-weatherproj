@@ -1,13 +1,18 @@
 package weather.cli;
 
+import weather.service.WeatherService;
+
 import java.util.Map;
 import java.util.HashMap;
 
 
 public class WeatherCLI {
     private final Map<String, Runnable> commands = new HashMap<>();
+    private final WeatherService service;
 
-    public WeatherCLI(){
+    public WeatherCLI(WeatherService service){
+        this.service = service;
+
         commands.put("help", this::help);
         commands.put("locations", this::locations);
         commands.put("current", this::current);
