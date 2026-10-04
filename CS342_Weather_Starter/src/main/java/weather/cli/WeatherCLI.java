@@ -7,10 +7,10 @@ import weather.service.WeatherService;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 
 public class WeatherCLI {
-    private final Map<String, Runnable> commands = new HashMap<>();
     private final WeatherService service;
     private final List<Location> locationList;
 
@@ -18,15 +18,6 @@ public class WeatherCLI {
         this.service = service;
 
         locationList = this.service.getLocations();
-
-        commands.put("help", this::help);
-        commands.put("locations", this::locations);
-        commands.put("current", this::current);
-        commands.put("compare", this::compare);
-        commands.put("summary", this::summary);
-        commands.put("exit", this::exit);
-
-        //then do something with weather sercice which idk right now
     }
 
     public void printTitle(){
@@ -36,11 +27,54 @@ public class WeatherCLI {
     public void readInput(){
         String input = IO.readln(">");
 
-        Runnable command = commands.get(input);
-
-        if(command != null){
-            command.run();
+        if(input.isEmpty()){
+            return;
         }
+
+        String[] parts = input.split("\\+", 2);
+        String command = parts[0];
+        String argument = parts.length > 1 ? parts[1] : "";
+
+        if(command.equalsIgnoreCase("Help")){
+            help();
+        }
+
+        if(command.equalsIgnoreCase("Locations")){
+            locations();
+        }
+
+        if(command.equalsIgnoreCase("Current")){
+            if(argument.isEmpty()){
+                IO.println("Please use: current <location>");
+            }
+            else{
+                current(argument);
+            }
+        }
+
+        if(command.equalsIgnoreCase("Compare")){
+            String[] places = argument.split(" ", 1);
+            if(places.length < 2 || places[0].isBlank() || places[1].isBlank()){
+                IO.println("Please use: compare <location1> <location2");
+            }
+            else{
+                compare(places[0], places[1]);
+            }
+        }
+
+        if(command.equalsIgnoreCase("Summary")){
+            if(argument.isEmpty()){
+                IO.println("Please use: summary <location>");
+            }
+            else{
+                summary(argument);
+            }
+        }
+
+        if(command.equalsIgnoreCase("Exit")){
+            exit();
+        }
+
 
     }
 
@@ -67,6 +101,7 @@ public class WeatherCLI {
         double wind = service.getWindSpeed(city);
 
         //print the thing
+        System.out.printf("%s: %fF, Humidity: %f, Wind Speed: %f", city, temp, humidity, wind);
     }
 
     private void compare(String city1, String city2){
@@ -79,12 +114,14 @@ public class WeatherCLI {
         double wind2 = service.getWindSpeed(city2);
 
         //print the thing
+        System.out.printf("%s: %fF, Humidity: %f, Wind Speed: %f", city1, temp1, humidity1, wind1);
+        System.out.printf("%s: %fF, Humidity: %f, Wind Speed: %f", city2, temp2, humidity2, wind2);
     }
 
     private void summary(String city){
         //Weather code like there's an actual code set of summaries
 
-        //print the thing
+        IO.println("just a placeholder");
     }
 
     private void exit(){
