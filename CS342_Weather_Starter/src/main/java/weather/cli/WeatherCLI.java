@@ -21,14 +21,14 @@ public class WeatherCLI {
         IO.println("Weather Information Service");
     }
 
-    public void readInput(){
+    public boolean readInput(){
         String input = IO.readln(">");
 
         if(input.isEmpty()){
-            return;
+            return true;
         }
 
-        String[] parts = input.split("\\+", 2);
+        String[] parts = input.split("\\s+", 2);
         String command = parts[0];
         String argument = parts.length > 1 ? parts[1] : "";
 
@@ -50,7 +50,8 @@ public class WeatherCLI {
         }
 
         if(command.equalsIgnoreCase("Compare")){
-            String[] places = argument.split(" ", 1);
+            String[] places = argument.split("\\s+", 2);
+
             if(places.length < 2 || places[0].isBlank() || places[1].isBlank()){
                 IO.println("Please use: compare <location1> <location2");
             }
@@ -69,10 +70,9 @@ public class WeatherCLI {
         }
 
         if(command.equalsIgnoreCase("Exit")){
-            exit();
+            return false;
         }
-
-
+        return true;
     }
 
     private void help(){
@@ -93,12 +93,14 @@ public class WeatherCLI {
     }
 
     private void current(String city){
+        System.out.println("CURRENT WAS CALLED");
+        System.out.println("City = " + city);
         double temp = service.getTemperature(city);
         double humidity = service.getHumidity(city);
         double wind = service.getWindSpeed(city);
 
         //print the thing
-        System.out.printf("%s: %fF, Humidity: %f, Wind Speed: %f", city, temp, humidity, wind);
+        System.out.printf("%s: %.0fF, Humidity: %.0f%%, Wind Speed: %.0fmph%n", city, temp, humidity, wind);
     }
 
     private void compare(String city1, String city2){
@@ -111,8 +113,8 @@ public class WeatherCLI {
         double wind2 = service.getWindSpeed(city2);
 
         //print the thing
-        System.out.printf("%s: %fF, Humidity: %f, Wind Speed: %f", city1, temp1, humidity1, wind1);
-        System.out.printf("%s: %fF, Humidity: %f, Wind Speed: %f", city2, temp2, humidity2, wind2);
+        System.out.printf("%s: %.0fF, Humidity: %.0f%%, Wind Speed: %.0fmph%n", city1, temp1, humidity1, wind1);
+        System.out.printf("%s: %.0fF, Humidity: %.0f%%, Wind Speed: %.0fmph%n", city2, temp2, humidity2, wind2);
     }
 
     private void summary(String city){
@@ -121,23 +123,6 @@ public class WeatherCLI {
         IO.println("just a placeholder");
     }
 
-    private void exit(){
-        //gotta stop loop in main which would stop program
 
-    }
-
-//    //is this needed?
-//    static void renderBar(String city, double temp) {  //Instead of these parameters, we pass the records
-//        System.out.printf("%-15s | %5.1f°F [", city, temp);
-//        int barLength = (int) Math.max(0, temp / 2);
-//
-//        for (int j = 0; j < barLength; j++) {
-//            System.out.print("■");
-//        }
-//        for (int j = barLength; j < 40; j++) {
-//            System.out.print(" ");
-//        }
-//        //println("]");
-//    }
 }
 

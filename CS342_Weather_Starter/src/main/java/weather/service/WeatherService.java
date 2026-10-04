@@ -27,7 +27,7 @@ public class WeatherService {
 
         for(Location location : locations) {
             String name = location.name();
-            name = name.replace(' ', '_');
+            name = name.replace(' ', '+');
             WeatherData data = null;
             try{
                  data = this.provider.getCurrentWeather(name);
