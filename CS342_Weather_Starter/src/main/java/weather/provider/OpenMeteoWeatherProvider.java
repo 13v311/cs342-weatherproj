@@ -12,8 +12,6 @@ import java.net.http.HttpResponse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.lang.IO.println;
-
 public class OpenMeteoWeatherProvider implements WeatherDataProvider {
 
     private double parseLat(String json) throws WeatherDataException {
@@ -66,12 +64,23 @@ public class OpenMeteoWeatherProvider implements WeatherDataProvider {
         return Double.parseDouble(matcher.group(1));
     }
 
+    private Integer parseWeatherCode(String json) throws WeatherDataException {
+        Pattern pattern = Pattern.compile("\"weather_code\":\\s*([0-9.-]+)");
+        Matcher matcher = pattern.matcher(json);
+        if (!matcher.find()) {
+            throw new WeatherDataException(
+                    "Weather Code missing from http response");
+        }
+        return Integer.parseInt(matcher.group(1));
+    }
+
     public WeatherData getCurrentWeather(String city) throws WeatherDataException {
         double lat = 0;
         double lon = 0;
         double temp = 0; // in F
         double humidity = 0;
         double windSpeed = 0; //in mph
+        Integer code = 0;
 
         try (HttpClient client = HttpClient.newHttpClient()) {
             String url = "https://geocoding-api.open-meteo.com/v1/search?name=" +
@@ -106,7 +115,7 @@ public class OpenMeteoWeatherProvider implements WeatherDataProvider {
         try (HttpClient client = HttpClient.newHttpClient()) {
             String url = "https://api.open-meteo.com/v1/forecast?latitude=" +
                     lat + "&longitude=" +
-                    lon + "&current=temperature_2m,relative_humidity_2m,wind_speed_10m&wind_speed_unit=mph&temperature_unit=fahrenheit";
+                    lon + "&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&wind_speed_unit=mph&temperature_unit=fahrenheit";
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -123,6 +132,7 @@ public class OpenMeteoWeatherProvider implements WeatherDataProvider {
             temp = parseTemperature(response.body());
             humidity = parseHumidity(response.body());
             windSpeed = parseWindSpeed(response.body());
+            code = parseWeatherCode(response.body());
 
 
 
@@ -135,7 +145,7 @@ public class OpenMeteoWeatherProvider implements WeatherDataProvider {
             throw new WeatherDataException(
                     "Weather request interrupted", e);
         }
-        return new WeatherData(city, temp, humidity, windSpeed);
+        return new WeatherData(city, temp, humidity, windSpeed, code);
     }
 }
 

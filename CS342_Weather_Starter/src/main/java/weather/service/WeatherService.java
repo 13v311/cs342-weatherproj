@@ -73,5 +73,11 @@ public class WeatherService {
         return f.windSpeed();
     }
 
+    public Integer getCode(String city){
+        Location location = findLocation(city);
+        WeatherData f = cities.get(location);
+        return f.code();
+    }
+
 
 }
