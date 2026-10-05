@@ -21,6 +21,11 @@ mvn test
 And you can view what the tests are actually looking for within the files of the test folder.
 
 ## Design
+This program's function is split up to multiple classes to handle each responsibility independently. `WeatherDataProvider` is an
+interface which allows us to have a blueprint to deal with different APIs or data for the program. `WeatherService` is a class, where
+we inject that data and the class holds the given data. `WeatherCLI` responsibility is with the command line. It handles
+user input, and displaying results. With dependency injection, these classes work together to deliver the program. It also makes it
+easy to fix errors or change behavior when each responsibility is in its own class.
 ## Interfaces
 We use the `WeatherDataProvider` interface, as it gives a blueprint for any weather API class. For example,
 it allows us to understand how to format `OpenMeteoWeatherProvider`, and we can also use it for any new weather API.
