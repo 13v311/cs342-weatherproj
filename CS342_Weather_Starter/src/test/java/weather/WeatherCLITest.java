@@ -39,7 +39,7 @@ class WeatherCLITest {
         String result = output.toString();
 
         assertTrue(
-                result.contains("Unknown command. Please try again."),
+                result.contains("Unknown command. Use <help> to show all commands"),
                 "Invalid command should produce an error message"
         );
     }
