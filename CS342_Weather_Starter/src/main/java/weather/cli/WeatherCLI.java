@@ -1,5 +1,6 @@
 package weather.cli;
 
+import weather.exception.LocationException;
 import weather.model.CityPair;
 import weather.model.Location;
 //import weather.model.WeatherData;
@@ -53,7 +54,7 @@ public class WeatherCLI {
             String[] places = argument.split("\\s*,\\s", 2);
 
             if(places.length < 2 || places[0].isBlank() || places[1].isBlank()){
-                IO.println("Please use: compare <location1> <location2");
+                IO.println("Please use: compare <location1>, <location2");
             }
             else{
                 compare(places[0], places[1]);
@@ -97,38 +98,53 @@ public class WeatherCLI {
     }
 
     private void current(String city){
-        double temp = service.getTemperature(city);
-        double humidity = service.getHumidity(city);
-        double wind = service.getWindSpeed(city);
 
-        //print the thing
-        System.out.printf("%s: %.0fF, Humidity: %.0f%%, Wind Speed: %.0fmph%n", city, temp, humidity, wind);
+        try {
+            double temp = service.getTemperature(city);
+            double humidity = service.getHumidity(city);
+            double wind = service.getWindSpeed(city);
+            System.out.printf("%s: %.0fF, Humidity: %.0f%%, Wind Speed: %.0fmph%n", city, temp, humidity, wind);
+        }
+        catch (LocationException e){
+            IO.println(e.getMessage());
+        }
+
     }
 
     private void compare(String city1, String city2){
-        double temp1 = service.getTemperature(city1);
-        double humidity1 = service.getHumidity(city1);
-        double wind1 = service.getWindSpeed(city1);
+        try{
+            double temp1 = service.getTemperature(city1);
+            double humidity1 = service.getHumidity(city1);
+            double wind1 = service.getWindSpeed(city1);
 
-        double temp2 = service.getTemperature(city2);
-        double humidity2 = service.getHumidity(city2);
-        double wind2 = service.getWindSpeed(city2);
+            double temp2 = service.getTemperature(city2);
+            double humidity2 = service.getHumidity(city2);
+            double wind2 = service.getWindSpeed(city2);
 
-        System.out.printf("%s: %.0fF, Humidity: %.0f%%, Wind Speed: %.0fmph%n", city1, temp1, humidity1, wind1);
-        System.out.printf("%s: %.0fF, Humidity: %.0f%%, Wind Speed: %.0fmph%n", city2, temp2, humidity2, wind2);
-        if(temp1 > temp2){
-            System.out.printf("%s is the hotter city%n", city1);
-        }
-        else{
-            System.out.printf("%s is the hotter city%n", city2);
+            System.out.printf("%s: %.0fF, Humidity: %.0f%%, Wind Speed: %.0fmph%n", city1, temp1, humidity1, wind1);
+            System.out.printf("%s: %.0fF, Humidity: %.0f%%, Wind Speed: %.0fmph%n", city2, temp2, humidity2, wind2);
+            if(temp1 > temp2){
+                System.out.printf("%s is the hotter city%n", city1);
+            }
+            else{
+                System.out.printf("%s is the hotter city%n", city2);
+            }
+        } catch (LocationException e) {
+            IO.println(e.getMessage());
         }
 
     }
 
     private void summary(String city){
-        String description = service.getSummary(city);
+        try{
+            String description = service.getSummary(city);
 
-        IO.println(description);
+            IO.println(description);
+        }
+        catch (LocationException e){
+            IO.println(e.getMessage());
+        }
+
     }
 
     private void hottest(){

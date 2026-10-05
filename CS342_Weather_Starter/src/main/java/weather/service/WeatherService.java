@@ -1,5 +1,6 @@
 package weather.service;
 
+import weather.exception.LocationException;
 import weather.exception.WeatherDataException;
 import weather.model.CityPair;
 import weather.model.Location;
@@ -77,31 +78,29 @@ public class WeatherService {
         return new ArrayList<>(cities.keySet());
     }
 
-    public Location findLocation(String name){
-        for(Location location : cities.keySet()){
-            if(name.equalsIgnoreCase(location.name())){
+    public Location findLocation(String name) {
+
+        for(Location location : cities.keySet()) {
+            if (name.equalsIgnoreCase(location.name())) {
                 return location;
             }
-
         }
-        return null;
+        throw new LocationException("Unknown location: " + name);
     }
 
     public double getTemperature(String city){
         Location location = findLocation(city);
-
-
         WeatherData f = cities.get(location);
         return f.temp();
     }
 
-    public double getHumidity(String city){
+    public double getHumidity(String city) {
         Location location = findLocation(city);
         WeatherData f = cities.get(location);
         return f.humidity();
     }
 
-    public double getWindSpeed(String city){
+    public double getWindSpeed(String city) {
         Location location = findLocation(city);
         WeatherData f = cities.get(location);
         return f.windSpeed();

@@ -1,6 +1,7 @@
 package weather;
 
 import org.junit.jupiter.api.Test;
+import weather.exception.LocationException;
 import weather.exception.WeatherDataException;
 import weather.model.CityPair;
 import weather.provider.FakeWeatherDataProvider;
@@ -32,8 +33,9 @@ class WeatherServiceTest {
 
     @Test
     void findUnknownLocation() {
-        assertNull(service.findLocation("Miami"), "Miami should not exist as a known location.");
-    }
+        assertThrows(LocationException.class, () -> {
+            service.findLocation("Miami");
+        });    }
 
     @Test
     void allLocationExist() {
@@ -58,7 +60,7 @@ class WeatherServiceTest {
 
     @Test
     void unknownLocationThrowsException() {
-        assertThrows(WeatherDataException.class, () -> {
+        assertThrows(LocationException.class, () -> {
             service.getTemperature("Miami");
         });
     }
