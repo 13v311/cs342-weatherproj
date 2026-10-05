@@ -54,8 +54,11 @@ public class WeatherCLI {
         IO.println("Weather Information Service");
     }
 
-    public boolean readInput(){
-        String input = IO.readln(">");
+    public String readInput() {
+        return IO.readln(">");
+    }
+
+    public boolean processInput(String input){
 
         if(input.isEmpty()){
             return true;
@@ -104,8 +107,11 @@ public class WeatherCLI {
 
         if(command.equalsIgnoreCase("Exit")){
             return false;
+        } else {
+            IO.println("Unknown command. Please try again.");
+            return true;
         }
-        return true;
+
     }
 
     private void help(){

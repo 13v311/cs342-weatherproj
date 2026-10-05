@@ -27,7 +27,11 @@ public class Main {
         WeatherCLI console = new WeatherCLI(service);
 
         console.printTitle();
-        while(console.readInput()){}
+        String input = console.readInput();
+        while(!input.isEmpty()){
+            if(!console.processInput(input)) {break;}
+            input = console.readInput();
+        }
 
     }
 }

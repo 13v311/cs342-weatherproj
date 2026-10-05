@@ -1,6 +1,7 @@
 package weather.service;
 
 import weather.exception.WeatherDataException;
+import weather.model.CityPair;
 import weather.model.Location;
 import weather.model.WeatherData;
 import weather.provider.WeatherDataProvider;
@@ -79,5 +80,18 @@ public class WeatherService {
         return f.code();
     }
 
+    public CityPair getHottestCity() {
+        double highestTemp = 0;
+        String city = "";
+        List<Location> allLocations = getLocations();
+        for(Location location : allLocations) {
+            WeatherData f = cities.get(location);
+            if(highestTemp < f.temp()) {
+                highestTemp = f.temp();
+                city = f.city();
+            }
+        }
+        return new CityPair(city, highestTemp);
+    }
 
 }
