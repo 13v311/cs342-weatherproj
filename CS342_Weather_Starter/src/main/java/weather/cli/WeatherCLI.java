@@ -3,7 +3,6 @@ package weather.cli;
 import weather.exception.LocationException;
 import weather.model.CityPair;
 import weather.model.Location;
-//import weather.model.WeatherData;
 import weather.service.WeatherService;
 
 import java.util.List;

@@ -1,7 +1,9 @@
 package weather;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import weather.cli.WeatherCLI;
+import weather.exception.WeatherDataException;
 import weather.provider.FakeWeatherDataProvider;
 import weather.provider.WeatherDataProvider;
 import weather.service.WeatherService;
@@ -11,16 +13,22 @@ import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Starter test file.
- *
- * Final requirement: at least 5 meaningful JUnit test methods in this file.
- * Replace/remove this placeholder as you implement the project.
- */
 class WeatherCLITest {
-WeatherDataProvider fakeProvider = new FakeWeatherDataProvider();
-WeatherService service = new WeatherService(fakeProvider);
-WeatherCLI cli = new WeatherCLI(service);
+    WeatherDataProvider fakeProvider = new FakeWeatherDataProvider();
+    WeatherService service;
+    WeatherCLI cli;
+
+    @BeforeEach
+    void setup(){
+        try{
+            service= new WeatherService(fakeProvider);
+            cli = new WeatherCLI(service);
+        }
+        catch (WeatherDataException e){
+            fail("Could not create WeatherService: " + e.getMessage());
+        }
+    }
+
     @Test
     void invalidCommand() {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -51,6 +59,7 @@ WeatherCLI cli = new WeatherCLI(service);
         assertTrue(result.contains("current <location>"));
         assertTrue(result.contains("compare <location1><location2>"));
         assertTrue(result.contains("summary <location>"));
+        assertTrue(result.contains("hottest"));
         assertTrue(result.contains("exit"));
     }
 
@@ -118,6 +127,22 @@ WeatherCLI cli = new WeatherCLI(service);
                 result.contains("Clear sky"),
                 "Should show Clear Skies since the code is 0"
         );
+    }
+
+    //Additional functionality test
+    @Test
+    void hottestCommand(){
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+
+        cli.processInput("hottest");
+        String result  = output.toString();
+
+        assertTrue(
+                result.contains("Los Angeles is the hottest city with 80F"),
+                "Out of the three, Los Angeles is the hotter city"
+        );
+
     }
 
     @Test

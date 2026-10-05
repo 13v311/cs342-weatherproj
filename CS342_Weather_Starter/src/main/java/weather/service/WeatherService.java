@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.System.exit;
-
 public class WeatherService {
     private final WeatherDataProvider provider;
 
@@ -51,7 +49,7 @@ public class WeatherService {
     );
 
 
-    public WeatherService(WeatherDataProvider provider){
+    public WeatherService(WeatherDataProvider provider) throws WeatherDataException {
         this.provider = provider;
 
         List<Location> locations = List.of(
@@ -63,13 +61,7 @@ public class WeatherService {
         for(Location location : locations) {
             String name = location.name();
             WeatherData data = null;
-            try{
-                 data = this.provider.getCurrentWeather(name);
-            }
-            catch (WeatherDataException e){
-                IO.println("Failure to get weather for:" + e.getMessage());
-                exit(1);
-            }
+            data = this.provider.getCurrentWeather(name);
             this.cities.put(location, data);
         }
     }

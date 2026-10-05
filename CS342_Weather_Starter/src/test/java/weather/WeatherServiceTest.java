@@ -1,5 +1,6 @@
 package weather;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import weather.exception.LocationException;
 import weather.exception.WeatherDataException;
@@ -18,7 +19,18 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class WeatherServiceTest {
     WeatherDataProvider fakeProvider = new FakeWeatherDataProvider();
-    WeatherService service = new WeatherService(fakeProvider);
+    WeatherService service;
+
+    @BeforeEach
+    void setup(){
+        try{
+            service = new WeatherService(fakeProvider);
+        }
+        catch (WeatherDataException e){
+            fail("Could not create WeatherService: " + e.getMessage());
+        }
+    }
+
 
     @Test
     void verifyChicagoTemp() {
@@ -69,5 +81,16 @@ class WeatherServiceTest {
     void highestTemp() {
         CityPair p = new CityPair("Los Angeles", 80);
         assertEquals(p, service.getHottestCity(), "Hottest city should be Los Angeles at 80F.");
+    }
+
+    @Test
+    void providerFailes(){
+        WeatherDataProvider fail = city -> {
+            throw new WeatherDataException("Provider failed");
+        };
+
+        assertThrows(WeatherDataException.class, () -> {
+            new WeatherService(fail);
+        });
     }
 }
