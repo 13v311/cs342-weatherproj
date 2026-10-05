@@ -73,7 +73,7 @@ public class WeatherCLI {
         else if(command.equalsIgnoreCase("Exit")){
             return false;
         } else {
-            IO.println("Unknown command. Please try again.");
+            IO.println("Unknown command. Use <help> to show all commands");
         }
         return true;
     }
