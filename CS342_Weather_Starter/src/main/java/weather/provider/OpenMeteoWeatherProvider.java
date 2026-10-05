@@ -81,6 +81,7 @@ public class OpenMeteoWeatherProvider implements WeatherDataProvider {
         double humidity = 0;
         double windSpeed = 0; //in mph
         Integer code = 0;
+        city = city.replace(' ', '+');
 
         try (HttpClient client = HttpClient.newHttpClient()) {
             String url = "https://geocoding-api.open-meteo.com/v1/search?name=" +
@@ -145,6 +146,7 @@ public class OpenMeteoWeatherProvider implements WeatherDataProvider {
             throw new WeatherDataException(
                     "Weather request interrupted", e);
         }
+        city = city.replace('+', ' ');
         return new WeatherData(city, temp, humidity, windSpeed, code);
     }
 }

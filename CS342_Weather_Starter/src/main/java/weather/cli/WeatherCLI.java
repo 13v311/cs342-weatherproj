@@ -1,48 +1,15 @@
 package weather.cli;
 
+import weather.model.CityPair;
 import weather.model.Location;
 //import weather.model.WeatherData;
 import weather.service.WeatherService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 
 public class WeatherCLI {
     private final WeatherService service;
     private final List<Location> locationList;
-    private final Map<Integer, String> weatherCodes = Map.ofEntries(
-            Map.entry(0, "Clear sky"),
-            Map.entry(1, "Mainly clear"),
-            Map.entry(2, "Partly cloudy"),
-            Map.entry(3, "Overcast"),
-            Map.entry(45, "Fog"),
-            Map.entry(48, "Depositing rime fog"),
-            Map.entry(51, "Light drizzle"),
-            Map.entry(53, "Moderate drizzle"),
-            Map.entry(55, "Dense drizzle"),
-            Map.entry(56, "Light freezing drizzle"),
-            Map.entry(57, "Dense freezing drizzle"),
-            Map.entry(61, "Slight rain"),
-            Map.entry(63, "Moderate rain"),
-            Map.entry(65, "Heavy rain"),
-            Map.entry(66, "Light freezing rain"),
-            Map.entry(67, "Heavy freezing rain"),
-            Map.entry(71, "Slight snowfall"),
-            Map.entry(73, "Moderate snowfall"),
-            Map.entry(75, "Heavy snowfall"),
-            Map.entry(77, "Snow grains"),
-            Map.entry(80, "Slight rain showers"),
-            Map.entry(81, "Moderate rain showers"),
-            Map.entry(82, "Violent rain showers"),
-            Map.entry(85, "Slight snow showers"),
-            Map.entry(86, "Heavy snow showers"),
-            Map.entry(95, "Thunderstorm"),
-            Map.entry(96, "Thunderstorm with slight hail"),
-            Map.entry(97, "Heavy thunderstorm"),
-            Map.entry(99, "Thunderstorm with heavy hail")
-    );
 
     public WeatherCLI(WeatherService service){
         this.service = service;
@@ -71,12 +38,10 @@ public class WeatherCLI {
         if(command.equalsIgnoreCase("Help")){
             help();
         }
-
-        if(command.equalsIgnoreCase("Locations")){
+        else if(command.equalsIgnoreCase("Locations")){
             locations();
         }
-
-        if(command.equalsIgnoreCase("Current")){
+        else if(command.equalsIgnoreCase("Current")){
             if(argument.isEmpty()){
                 IO.println("Please use: current <location>");
             }
@@ -84,9 +49,8 @@ public class WeatherCLI {
                 current(argument);
             }
         }
-
-        if(command.equalsIgnoreCase("Compare")){
-            String[] places = argument.split("\\s+", 2);
+        else if(command.equalsIgnoreCase("Compare")){
+            String[] places = argument.split("\\s*,\\s", 2);
 
             if(places.length < 2 || places[0].isBlank() || places[1].isBlank()){
                 IO.println("Please use: compare <location1> <location2");
@@ -95,8 +59,7 @@ public class WeatherCLI {
                 compare(places[0], places[1]);
             }
         }
-
-        if(command.equalsIgnoreCase("Summary")){
+        else if(command.equalsIgnoreCase("Summary")){
             if(argument.isEmpty()){
                 IO.println("Please use: summary <location>");
             }
@@ -104,14 +67,16 @@ public class WeatherCLI {
                 summary(argument);
             }
         }
-
-        if(command.equalsIgnoreCase("Exit")){
+        else if(command.equalsIgnoreCase("Hottest")){
+            hottest();
+        }
+        else if(command.equalsIgnoreCase("Exit")){
             return false;
         } else {
             IO.println("Unknown command. Please try again.");
-            return true;
-        }
 
+        }
+        return true;
     }
 
     private void help(){
@@ -121,13 +86,14 @@ public class WeatherCLI {
         IO.println("    current <location>");
         IO.println("    compare <location1><location2>");
         IO.println("    summary <location>");
+        IO.println("    hottest");
         IO.println("    exit");
     }
 
     private void locations(){
         IO.println("All Locations:");
         for(Location location: locationList){
-            IO.println(location.name());
+            IO.println("    " +location.name());
         }
     }
 
@@ -149,16 +115,26 @@ public class WeatherCLI {
         double humidity2 = service.getHumidity(city2);
         double wind2 = service.getWindSpeed(city2);
 
-        //print the thing
         System.out.printf("%s: %.0fF, Humidity: %.0f%%, Wind Speed: %.0fmph%n", city1, temp1, humidity1, wind1);
         System.out.printf("%s: %.0fF, Humidity: %.0f%%, Wind Speed: %.0fmph%n", city2, temp2, humidity2, wind2);
+        if(temp1 > temp2){
+            System.out.printf("%s is the hotter city%n", city1);
+        }
+        else{
+            System.out.printf("%s is the hotter city%n", city2);
+        }
+
     }
 
     private void summary(String city){
-        Integer code = service.getCode(city);
-        String description = weatherCodes.get(code);
+        String description = service.getSummary(city);
 
         IO.println(description);
+    }
+
+    private void hottest(){
+        CityPair hotCity = service.getHottestCity();
+        System.out.printf("%s is the hottest city with %.0fF%n", hotCity.city(), hotCity.weatherVal());
     }
 
 
