@@ -74,7 +74,6 @@ public class WeatherCLI {
             return false;
         } else {
             IO.println("Unknown command. Please try again.");
-
         }
         return true;
     }

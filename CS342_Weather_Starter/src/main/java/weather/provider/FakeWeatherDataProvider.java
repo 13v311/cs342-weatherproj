@@ -8,7 +8,7 @@ public class FakeWeatherDataProvider implements WeatherDataProvider {
     @Override
     public WeatherData getCurrentWeather(String city) {
         if (city.equals("Chicago")) {
-            return new WeatherData("Chicago", 70, 50, 10, 1);
+            return new WeatherData("Chicago", 70, 50, 10, 0);
         }
 
         if (city.equals("Los Angeles")) { //we use + since that is how it is formatted from WeatherService

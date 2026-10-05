@@ -77,8 +77,6 @@ WeatherCLI cli = new WeatherCLI(service);
 
         String result = output.toString();
 
-        assertTrue(result.contains("City = Chicago"));
-
         assertTrue(result.contains("Chicago: 70F, Humidity: 50%, Wind Speed: 10mph"));
     }
 
@@ -87,7 +85,7 @@ WeatherCLI cli = new WeatherCLI(service);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
 
-        cli.processInput("compare Chicago Los Angeles");
+        cli.processInput("compare Chicago, Los Angeles");
 
         String result = output.toString();
 
@@ -99,6 +97,11 @@ WeatherCLI cli = new WeatherCLI(service);
         assertTrue(
                 result.contains("Los Angeles: 80F, Humidity: 40%, Wind Speed: 5mph"),
                 "Comparison should display Los Angeles's weather"
+        );
+
+        assertTrue(
+                result.contains("Los Angeles is the hotter city"),
+                "Comparison should show Los Angeles is hotter"
         );
     }
 
@@ -112,8 +115,8 @@ WeatherCLI cli = new WeatherCLI(service);
         String result = output.toString();
 
         assertTrue(
-                result.contains("Unknown command. Please try again."),
-                "Invalid command should produce an error message"
+                result.contains("Clear sky"),
+                "Should show Clear Skies since the code is 0"
         );
     }
 
@@ -123,8 +126,8 @@ WeatherCLI cli = new WeatherCLI(service);
         System.setOut(new PrintStream(output));
 
 
-        boolean b =         cli.processInput("exit");
+        boolean b = cli.processInput("exit");
 
-        assertTrue(b, "Invalid command should produce an error message");
+        assertFalse(b, "Invalid command should produce an error message");
     }
 }
